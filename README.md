@@ -1,4 +1,4 @@
-Folder 1: B3_FileInfect_Lamvd have code virus (.asm) and file virus compiled (.exe). 
+Folder 1: B3_FileInfect_Lamvd have code virus (infectFile_Success.asm) and file virus compiled (infectFile_Success.exe). 
 
 Folder 2: test just have file 32bit infected that I tested before. You can check their sections (.infect) in CFF Explorer. 
 
