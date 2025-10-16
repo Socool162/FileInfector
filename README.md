@@ -5,7 +5,5 @@ Folder 2: test just have file 32bit infected that I tested before. You can check
 Folder 3: test1 have clean original file (.exe) that I use to test. In CFF Explorer, their files have not .inject section.
 
 Note:
-- I custome this path 
-"search_path     db "L:\test\*.*",0
-base_path       db "L:\test\",0"
-- So if you test in C:\test, just change L to C.
+" search_path     db "L:\test\*.*",0  and base_path       db "L:\test\",0 "
+- I custome that path So if you test in C:\test, just change L to C.
