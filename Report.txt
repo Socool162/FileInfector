@@ -1,0 +1,68 @@
+## Detailed Analysis & Evaluation of Each Criteria B3 FileInfector 🧐
+
+Criteria 1: Only one spreading process (using Mutex) ✅
+
+	Analysis: Use CreateMutexA with a fixed name (PEInfectorMutex) as soon as the program starts. Then, you check the result of GetLastError to see if it is equal to ERROR_ALREADY_EXISTS or not. Make sure there is only one instance of the program running at a time.
+
+	Code segment
+invoke CreateMutexA, NULL, FALSE, ADDR mutex_name
+invoke GetLastError
+.IF eax == ERROR_ALREADY_EXISTS
+jmp @@exit
+.ENDIF
+
+
+Criteria 2: Display MessageBox when infected file is executed ✅
+
+	Analysis: Virus_stub part
+
+	Use the call delta_offset / pop ebp technique to get the base address of the stub in memory. Subtracting offset (sub ebp, (offset delta_offset - offset virus_stub)) is necessary, ensuring that ebp always points to the right beginning of the stub no matter where it is copied.
+
+	Runtime API Loading: Stub does not call MessageBoxA directly but loads user32.dll via LoadLibraryA, then gets the MessageBoxA address via GetProcAddress. The addresses of these two functions are "patched" to the stub during the infection process.
+
+
+Criteria 3: Find 32-bit PE files (.exe and .dll) in L:\test ✅
+
+	Analysis: Use FindFirstFileA / FindNextFileA with path L:\test\*.*.
+
+	Filter 32-bit PE files: My code does not filter files based on extension (.exe or .dll). Instead, you read and check the header of every file found to determine if it is a valid 32-bit PE file ('ZM' signature, 'PE' signature, IMAGE_FILE_MACHINE_I386).
+
+
+Criteria 4: Check for infection markers (avoid spreading infections) ✅
+
+	Analysis: CheckInfected function
+	- I go through each section header of the PE file and compare its name with the marker string ".infect".
+
+
+Criterion 5: Infection Mechanism (Add Section, Edit Entry Point) ✅
+
+	Analysis: Add New Section
+
+	The AddInfectionSection function correctly calculates the important values ​​for the new section header: VirtualAddress, PointerToRawData (taking into account SectionAlignment and FileAlignment), VirtualSize, and SizeOfRawData.
+
+	Section Name: Name the new section ".infect", which meets the requirements and is closely linked to Criterion 4.
+
+	PE Header Update: Increase NumberOfSections, update SizeOfImage, and most importantly, change AddressOfEntryPoint to point to the RVA of the new section.
+
+	Copying Malicious Code: In the InfectFile function, you copy virus_stub to the calculated location in the buffer.
+
+	Patching Stub: You have patched the necessary addresses (pLoadLibraryA, pGetProcAddress, original_entry_point_val, and rva_stub) into the stub copy. Patching rva_stub is a very important step for the stub to function properly in an ASLR environment.
+
+
+Criterion 6: Ensure the original file still works normally ✅
+
+	Analysis: The logic returns control to the original program (host) in virus_stub and is ASLR resistant.
+
+	Actual_ImageBase = EBP (Absolute address of stub) - RVA_of_stub
+
+	Absolute OEP address = Actual_ImageBase + Saved_OEP
+
+	jmp eax This is the standard way to calculate the address of the Original Entry Point (OEP) at execution time and redirect to it. This technique ensures that the original file will continue to run as normal after the malware has finished executing.
+
+Criterion 7: Do not infect system files (.sys) and itself ✅
+
+	Ignore the .sys file: The IsSystemFile function does its job by finding the file extension and comparing it to "sys".
+
+	Ignore itself: In infection_loop, you get the path of the virus file itself using GetModuleFileNameA, then compare it to the path of the target file. This is a simple and effective way.
+
+END.
