@@ -1,5 +1,5 @@
 ; ==============================================================================
-; Compile & Link command:
+; Compile & Link command: test folk branch
 ;   ml /c /Zd /coff fileInfect_Success.asm
 ;           link fileInfect_Success.obj /subsystem:console /entry:start
 ; Run:              fileInfect_Success.exe
@@ -632,4 +632,5 @@ start:
     
 @@exit:
     invoke ExitProcess, 0
+
 end start
