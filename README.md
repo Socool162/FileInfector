@@ -8,3 +8,4 @@ Note:
 
 " search_path     db "L:\test\*.*",0  and base_path       db "L:\test\",0 "
 - I custome that path So if you test in C:\test, just change L to C.
+- Dont test while openning file "fileInfect_Success.exe" in x32dbg (breakpoint will cause error)
