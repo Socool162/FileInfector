@@ -6,6 +6,5 @@ Folder 3: test1 have clean original file (.exe) that I use to test. In CFF Explo
 
 Note:
 
-" search_path     db "L:\test\*.*",0  and base_path       db "L:\test\",0 "
-- I custome that path So if you test in C:\test, just change L to C.
+- I custome " search_path     db "L:\test\*.*",0  and base_path       db "L:\test\",0 "... So if you test in C:\test, just change L to C.
 - Dont test while openning file "fileInfect_Success.exe" in x32dbg (breakpoint will cause error)
