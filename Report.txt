@@ -21,9 +21,9 @@ Criteria 2: Display MessageBox when infected file is executed ✅
 	Runtime API Loading: Stub does not call MessageBoxA directly but loads user32.dll via LoadLibraryA, then gets the MessageBoxA address via GetProcAddress. The addresses of these two functions are "patched" to the stub during the infection process.
 
 
-Criteria 3: Find 32-bit PE files (.exe and .dll) in L:\test ✅
+Criteria 3: Find 32-bit PE files (.exe and .dll) in C:\test ✅
 
-	Analysis: Use FindFirstFileA / FindNextFileA with path L:\test\*.*.
+	Analysis: Use FindFirstFileA / FindNextFileA with path C:\test\*.*.
 
 	Filter 32-bit PE files: My code does not filter files based on extension (.exe or .dll). Instead, you read and check the header of every file found to determine if it is a valid 32-bit PE file ('ZM' signature, 'PE' signature, IMAGE_FILE_MACHINE_I386).
 
@@ -64,5 +64,6 @@ Criterion 7: Do not infect system files (.sys) and itself ✅
 	Ignore the .sys file: The IsSystemFile function does its job by finding the file extension and comparing it to "sys".
 
 	Ignore itself: In infection_loop, you get the path of the virus file itself using GetModuleFileNameA, then compare it to the path of the target file. This is a simple and effective way.
+
 
 END.
